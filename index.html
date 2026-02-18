@@ -2,195 +2,19 @@
 <html>
 <head>
     <title>QuickPoll</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            height:100vh;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            background:#0f2027;
-            overflow:hidden;
-            color:white;
-        }
-
-        /* PARTICLES */
-        #tsparticles {
-            position:fixed;
-            width:100%;
-            height:100%;
-            z-index:-3;
-        }
-
-        /* GLOW AURAS */
-        .glow1, .glow2 {
-            position:fixed;
-            width:500px;
-            height:500px;
-            border-radius:50%;
-            filter:blur(120px);
-            z-index:-2;
-            animation:moveGlow 18s infinite alternate ease-in-out;
-        }
-
-        .glow1 {
-            background:radial-gradient(circle,#1cc88a 0%,transparent 70%);
-            top:-100px;
-            left:-100px;
-        }
-
-        .glow2 {
-            background:radial-gradient(circle,#36b9cc 0%,transparent 70%);
-            bottom:-120px;
-            right:-120px;
-            animation-delay:5s;
-        }
-
-        @keyframes moveGlow {
-            0% { transform:translate(0,0); }
-            100% { transform:translate(150px,100px); }
-        }
-
-        /* GLASS CONTAINER */
-        .container {
-            width:520px;
-            padding:30px;
-            border-radius:20px;
-            backdrop-filter:blur(18px);
-            background:rgba(255,255,255,0.06);
-            border:1px solid rgba(255,255,255,0.2);
-            box-shadow:
-                0 0 30px rgba(28,200,138,0.2),
-                0 15px 40px rgba(0,0,0,0.5);
-            text-align:center;
-            position:relative;
-        }
-
-        .brand h1 {
-            font-size:34px;
-            font-weight:700;
-        }
-
-        .brand-light { color:#e4e4e4; }
-
-        .brand-accent {
-            background:linear-gradient(45deg,#1cc88a,#36b9cc);
-            -webkit-background-clip:text;
-            -webkit-text-fill-color:transparent;
-        }
-
-        .brand p {
-            margin-top:6px;
-            font-size:13px;
-            color:#bbb;
-        }
-
-        input {
-            width:95%;
-            padding:10px;
-            margin:8px 0;
-            background:rgba(255,255,255,0.08);
-            border:1px solid rgba(255,255,255,0.2);
-            color:white;
-            border-radius:8px;
-            transition:0.3s;
-        }
-
-        input:focus {
-            outline:none;
-            border-color:#1cc88a;
-            box-shadow:0 0 12px rgba(28,200,138,0.6);
-        }
-
-        button {
-            padding:9px 16px;
-            margin:6px 4px;
-            background:linear-gradient(45deg,#4e73df,#1cc88a);
-            border:none;
-            color:white;
-            border-radius:8px;
-            cursor:pointer;
-            transition:0.25s;
-        }
-
-        button:hover {
-            transform:translateY(-2px);
-            box-shadow:0 6px 15px rgba(0,0,0,0.4);
-        }
-
-        button:disabled {
-            background:#555;
-            cursor:not-allowed;
-            opacity:0.6;
-        }
-
-        .option-btn {
-            width:100%;
-            margin-top:12px;
-        }
-
-        .result-wrapper { margin-top:6px; }
-
-        .result-bar {
-            height:12px;
-            background:rgba(255,255,255,0.1);
-            border-radius:6px;
-            overflow:hidden;
-        }
-
-        .fill {
-            height:100%;
-            background:linear-gradient(90deg,#1cc88a,#36b9cc);
-            transition:width 0.4s ease;
-        }
-
-        .result-text {
-            font-size:12px;
-            margin-top:4px;
-            display:flex;
-            justify-content:space-between;
-            color:#ccc;
-        }
-
-        .share-box {
-            background:rgba(255,255,255,0.05);
-            padding:10px;
-            margin-top:15px;
-            font-size:12px;
-            border-radius:8px;
-        }
-
-        #votersList {
-            margin-top:10px;
-            background:rgba(255,255,255,0.05);
-            padding:10px;
-            border-radius:8px;
-            max-height:150px;
-            overflow-y:auto;
-            display:none;
-            text-align:left;
-            font-size:13px;
-        }
-
-        #pollSection { display:none; }
-    </style>
 </head>
 
 <body>
 
-<div id="tsparticles"></div>
-<div class="glow1"></div>
-<div class="glow2"></div>
+<canvas id="starfield"></canvas>
 
 <div class="container">
-
     <div class="brand">
         <h1>
             <span class="brand-light">Quick</span>
@@ -201,10 +25,12 @@
 
     <div id="createSection">
         <input type="text" id="question" placeholder="Enter your question">
+
         <div id="optionInputs">
             <input type="text" class="optionInput" placeholder="Option 1">
             <input type="text" class="optionInput" placeholder="Option 2">
         </div>
+
         <button onclick="addOption()">Add Option</button>
         <button onclick="createPoll()">Generate Poll</button>
     </div>
@@ -226,170 +52,12 @@
         <button onclick="resetPoll()">Reset Poll</button>
         <button onclick="createNewPoll()">Create New Poll</button>
     </div>
-
 </div>
 
 <audio id="voteSound">
     <source src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" type="audio/mpeg">
 </audio>
 
-<script>
-/* PARTICLES */
-tsParticles.load("tsparticles", {
-    fullScreen:{enable:false},
-    particles:{
-        number:{value:40},
-        color:{value:"#36b9cc"},
-        size:{value:{min:1,max:3}},
-        opacity:{value:0.3},
-        move:{enable:true,speed:0.6},
-        links:{enable:true,color:"#36b9cc",opacity:0.2}
-    },
-    interactivity:{
-        events:{onHover:{enable:true,mode:"repulse"}},
-        modes:{repulse:{distance:80}}
-    }
-});
-
-/* POLL LOGIC */
-let allPolls = JSON.parse(localStorage.getItem("allPolls")) || {};
-let votedPolls = JSON.parse(localStorage.getItem("votedPolls")) || {};
-let currentPollId = null;
-
-function generateId(){ return "poll-" + Math.floor(Math.random()*1000000); }
-
-function addOption(){
-    let count=document.querySelectorAll(".optionInput").length;
-    if(count>=4){ alert("Maximum 4 options allowed"); return; }
-    let input=document.createElement("input");
-    input.type="text";
-    input.className="optionInput";
-    input.placeholder="Option "+(count+1);
-    document.getElementById("optionInputs").appendChild(input);
-}
-
-function createPoll(){
-    let question=document.getElementById("question").value.trim();
-    let inputs=document.querySelectorAll(".optionInput");
-    let options=[];
-    inputs.forEach(input=>{
-        if(input.value.trim()!==""){
-            options.push({text:input.value.trim(),votes:0,voters:[]});
-        }
-    });
-
-    if(question===""||options.length<2){
-        alert("Enter question and at least 2 options.");
-        return;
-    }
-
-    let id=generateId();
-    currentPollId=id;
-    allPolls[id]={question,options};
-    localStorage.setItem("allPolls",JSON.stringify(allPolls));
-    window.location.hash=id;
-    renderPoll();
-}
-
-function renderPoll(){
-    let poll=allPolls[currentPollId];
-    document.getElementById("createSection").style.display="none";
-    document.getElementById("pollSection").style.display="block";
-    document.getElementById("pollQuestion").innerText=poll.question;
-
-    let container=document.getElementById("optionsContainer");
-    container.innerHTML="";
-    let total=poll.options.reduce((s,o)=>s+o.votes,0);
-
-    poll.options.forEach((option,index)=>{
-        let percent=total===0?0:((option.votes/total)*100).toFixed(1);
-        container.innerHTML+=`
-            <div>
-                <button class="option-btn"
-                ${votedPolls[currentPollId]?"disabled":""}
-                onclick="vote(${index})">${option.text}</button>
-
-                <div class="result-wrapper">
-                    <div class="result-bar">
-                        <div class="fill" style="width:${percent}%"></div>
-                    </div>
-                    <div class="result-text">
-                        <span>${percent}%</span>
-                        <span>${option.votes} votes</span>
-                    </div>
-                </div>
-            </div>
-        `;
-    });
-
-    document.getElementById("shareLink").innerText=window.location.href;
-}
-
-function vote(index){
-    if(votedPolls[currentPollId]){ alert("You already voted!"); return; }
-
-    let name=prompt("Enter your name:");
-    if(!name||name.trim()===""){ alert("Name required!"); return; }
-
-    allPolls[currentPollId].options[index].votes++;
-    allPolls[currentPollId].options[index].voters.push(name.trim());
-    votedPolls[currentPollId]=true;
-
-    localStorage.setItem("allPolls",JSON.stringify(allPolls));
-    localStorage.setItem("votedPolls",JSON.stringify(votedPolls));
-
-    renderPoll();
-    confetti({particleCount:60,spread:60,origin:{y:0.6}});
-    document.getElementById("voteSound").play();
-}
-
-function toggleVoters(){
-    let box=document.getElementById("votersList");
-    if(box.style.display==="block"){ box.style.display="none"; box.innerHTML=""; return; }
-
-    let poll=allPolls[currentPollId];
-    let html="<strong>Voters:</strong><br><br>";
-    poll.options.forEach(option=>{
-        option.voters.forEach(name=>{
-            html+=`${name} voted for "${option.text}"<br>`;
-        });
-    });
-
-    if(html==="<strong>Voters:</strong><br><br>"){ html+="No votes yet."; }
-    box.innerHTML=html;
-    box.style.display="block";
-}
-
-function copyLink(){
-    navigator.clipboard.writeText(window.location.href);
-    alert("Link Copied!");
-}
-
-function shareWhatsApp(){
-    let text="Vote in this poll: "+window.location.href;
-    window.open("https://wa.me/?text="+encodeURIComponent(text),"_blank");
-}
-
-function resetPoll(){
-    delete allPolls[currentPollId];
-    delete votedPolls[currentPollId];
-    localStorage.setItem("allPolls",JSON.stringify(allPolls));
-    localStorage.setItem("votedPolls",JSON.stringify(votedPolls));
-    window.location.hash="";
-    location.reload();
-}
-
-function createNewPoll(){ window.location.hash=""; location.reload(); }
-
-function loadFromHash(){
-    let hash=window.location.hash.substring(1);
-    if(hash&&allPolls[hash]){
-        currentPollId=hash;
-        renderPoll();
-    }
-}
-loadFromHash();
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>

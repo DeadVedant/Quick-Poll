@@ -1,167 +1,296 @@
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-body{
-    font-family:'Poppins',sans-serif;
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background:#050910;
-    overflow:hidden;
-    color:white;
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #040b14;
+    color: white;
+    overflow-x: hidden;
 }
 
-/* STARFIELD */
-#starfield{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    z-index:-1;
+/* ===========================
+   Layout Wrapper
+=========================== */
+
+.page-wrapper {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 0;
 }
 
-/* CONTAINER */
-.container{
-    width:95%;
-    max-width:750px;
-    padding:50px;
-    border-radius:28px;
-    backdrop-filter:blur(24px);
-    background:rgba(255,255,255,0.06);
-    border:1px solid rgba(255,255,255,0.2);
-    box-shadow:
-        0 0 40px rgba(255,255,255,0.05),
-        0 25px 60px rgba(0,0,0,0.8);
-    text-align:center;
-    position:relative;
-    overflow:hidden;
+/* ===========================
+   Starfield Canvas
+=========================== */
+
+#starfield {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
 }
 
-/* SUBTLE SHINE */
-.container::before{
-    content:"";
-    position:absolute;
-    top:-50%;
-    left:-50%;
-    width:200%;
-    height:200%;
-    background:linear-gradient(120deg,transparent,rgba(255,255,255,0.05),transparent);
-    transform:rotate(25deg);
-    animation:shine 9s linear infinite;
-    pointer-events:none;
+/* ===========================
+   Glass Container
+=========================== */
+
+.container {
+    width: 95%;
+    max-width: 750px;
+    padding: 50px;
+    border-radius: 28px;
+
+    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.06); /* Stable translucent */
+    border: 1px solid rgba(255, 255, 255, 0.12);
+
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
 }
 
-@keyframes shine{
-    0%{transform:translateX(-100%) rotate(25deg);}
-    100%{transform:translateX(100%) rotate(25deg);}
+/* ===========================
+   Seamless Diagonal Wave
+=========================== */
+
+.container::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 300%;
+    height: 100%;
+
+    background: linear-gradient(
+        120deg,
+        transparent 0%,
+        rgba(120, 180, 255, 0.05) 25%,
+        transparent 50%,
+        rgba(120, 180, 255, 0.05) 75%,
+        transparent 100%
+    );
+
+    animation: waveMove 18s linear infinite;
+    pointer-events: none;
 }
 
-/* BRAND */
-.brand h1{font-size:40px;font-weight:700;}
-.brand-light{color:#e4e4e4;}
-.brand-accent{
-    background:linear-gradient(45deg,#8ecfff,#4ea3ff);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-}
-.brand p{margin-top:6px;font-size:14px;color:#aaa;}
-
-/* INPUTS */
-input{
-    width:100%;
-    padding:14px;
-    margin:12px 0;
-    background:rgba(255,255,255,0.08);
-    border:1px solid rgba(255,255,255,0.2);
-    color:white;
-    border-radius:12px;
-    transition:0.3s;
-}
-input:focus{
-    outline:none;
-    border-color:#4ea3ff;
-    box-shadow:0 0 12px rgba(78,163,255,0.4);
+@keyframes waveMove {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-33.33%); }
 }
 
-/* BUTTONS */
-button{
-    padding:11px 20px;
-    margin:8px 6px;
-    background:linear-gradient(45deg,#4ea3ff,#8ecfff);
-    border:none;
-    color:white;
-    border-radius:12px;
-    cursor:pointer;
-    transition:0.3s;
-}
-button:hover{
-    transform:translateY(-4px);
-    box-shadow:0 10px 25px rgba(0,0,0,0.6);
-}
-button:disabled{
-    background:#444;
-    cursor:not-allowed;
-    opacity:0.6;
+/* ===========================
+   Branding
+=========================== */
+
+.brand h1 {
+    font-size: 40px;
+    font-weight: 700;
 }
 
-.option-btn{width:100%;margin-top:16px;}
-
-.result-wrapper{margin-top:10px;}
-.result-bar{
-    height:16px;
-    background:rgba(255,255,255,0.1);
-    border-radius:10px;
-    overflow:hidden;
-}
-.fill{
-    height:100%;
-    background:linear-gradient(90deg,#4ea3ff,#8ecfff);
-    transition:width 0.4s ease;
-}
-.result-text{
-    font-size:14px;
-    margin-top:6px;
-    display:flex;
-    justify-content:space-between;
-    color:#ccc;
+.brand-accent {
+    background: linear-gradient(45deg, #8ecfff, #4ea3ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-.share-box{
-    background:rgba(255,255,255,0.06);
-    padding:16px;
-    margin-top:22px;
-    font-size:14px;
-    border-radius:14px;
-    word-break:break-word;
+.brand p {
+    margin-top: 8px;
+    font-size: 14px;
+    opacity: 0.8;
 }
 
-#shareLink{
-    margin:10px 0;
-    font-size:13px;
-    color:#8ecfff;
-    word-break:break-word;
+/* ===========================
+   Inputs
+=========================== */
+
+input {
+    width: 100%;
+    padding: 14px;
+    margin: 12px 0;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 12px;
+    outline: none;
+    transition: 0.2s ease;
 }
 
-#votersList{
-    margin-top:14px;
-    background:rgba(255,255,255,0.06);
-    padding:14px;
-    border-radius:12px;
-    max-height:200px;
-    overflow-y:auto;
-    display:none;
-    text-align:left;
-    font-size:14px;
+input:focus {
+    border-color: #4ea3ff;
 }
 
-#pollSection{display:none;}
+/* ===========================
+   Buttons
+=========================== */
 
-@media(max-width:480px){
-    .container{padding:28px;}
-    .brand h1{font-size:30px;}
+button {
+    padding: 11px 20px;
+    margin: 8px 6px;
+    background: linear-gradient(45deg, #4ea3ff, #8ecfff);
+    border: none;
+    color: white;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+}
+
+.option-btn {
+    width: 100%;
+    margin-top: 16px;
+}
+
+.option-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ===========================
+   Results Bar
+=========================== */
+
+.result-bar {
+    height: 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 6px;
+}
+
+.fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4ea3ff, #8ecfff);
+}
+
+/* ===========================
+   Share Section
+=========================== */
+
+.share-box {
+    margin-top: 20px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+}
+
+#shareLink {
+    margin: 10px 0;
+    font-size: 13px;
+    word-break: break-word;
+    opacity: 0.9;
+}
+
+/* ===========================
+   Voters List
+=========================== */
+
+#votersList {
+    margin-top: 14px;
+    background: rgba(255, 255, 255, 0.06);
+    padding: 14px;
+    border-radius: 12px;
+    max-height: 300px;
+    overflow-y: auto;
+    display: none;
+    text-align: left;
+}
+
+/* ===========================
+   Option Wrapper + Remove
+=========================== */
+
+.option-wrapper {
+    position: relative;
+}
+
+.remove-option {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    color: #ccc;
+    font-size: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.remove-option:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* ===========================
+   Modal
+=========================== */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.modal-box {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    padding: 30px;
+    border-radius: 16px;
+    width: 320px;
+    text-align: center;
+    transform: scale(0.8);
+    transition: 0.3s ease;
+}
+
+.modal-overlay.active .modal-box {
+    transform: scale(1);
+}
+
+.modal-actions {
+    margin-top: 20px;
+}
+
+#modalConfirm.danger {
+    background: #ff4e4e;
+}
+
+#modalConfirm.primary {
+    background: #4ea3ff;
+}
+
+/* ===========================
+   Poll Section Hidden Initially
+=========================== */
+
+#pollSection {
+    display: none;
 }

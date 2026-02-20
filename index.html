@@ -37,8 +37,8 @@
                 <input type="text" id="question" placeholder="Enter your question">
                 <div id="optionInputs"></div>
 
-                <button onclick="addOption()">Add Option</button>
-                <button onclick="createPoll()">Generate Poll</button>
+                <button data-action="addOption">Add Option</button>
+                <button data-action="createPoll">Generate Poll</button>
             </div>
 
             <!-- Poll Section -->
@@ -51,27 +51,35 @@
                     <div><strong>Share Link:</strong></div>
                     <div id="shareLink"></div>
 
-                    <button id="copyBtn" onclick="copyLink()">Copy Link</button>
-                    <button onclick="shareWhatsApp()">WhatsApp</button>
+                    <button id="copyBtn" data-action="copyLink">Copy Link</button>
+                    <button data-action="shareWhatsApp">WhatsApp</button>
                 </div>
 
                 <!-- Voters -->
-                <button onclick="toggleVoters()">See Voters</button>
+                <button data-action="toggleVoters">See Voters</button>
                 <div id="votersList"></div>
 
                 <!-- Poll Controls -->
-                <button onclick="openModal('reset')">Reset Poll</button>
-                <button onclick="openModal('new')">Create New Poll</button>
+                <button data-action="resetPoll" data-value="reset">Reset Poll</button>
+                <button data-action="createNewPoll" data-value="new">Create New Poll</button>
             </div>
 
         </div>
     </div>
 
-    <!-- 🔐 Custom Modal -->
+    <!-- 🔐 Custom Modal (Extended for Name Input) -->
     <div id="modalOverlay" class="modal-overlay">
         <div class="modal-box">
             <h3 id="modalTitle"></h3>
             <p id="modalText"></p>
+
+            <!-- Name Input (hidden unless needed) -->
+            <input 
+                type="text" 
+                id="modalInput" 
+                placeholder="Enter your name"
+                style="display:none;"
+            >
 
             <div class="modal-actions">
                 <button id="modalCancel">Cancel</button>

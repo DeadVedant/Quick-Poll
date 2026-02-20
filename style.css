@@ -1,296 +1,380 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
-body {
-    font-family: 'Poppins', sans-serif;
-    background: #040b14;
-    color: white;
-    overflow-x: hidden;
+/* =============================
+   🎨 CSS DESIGN TOKENS
+============================= */
+
+:root {
+    /* Background Colors */
+    --bg-primary: #040b14;
+    --bg-glass: rgba(255, 255, 255, 0.05);
+    --bg-glass-hover: rgba(255, 255, 255, 0.08);
+    --bg-input: rgba(255, 255, 255, 0.08);
+    
+    /* Borders & Overlays */
+    --border-glass: 1px solid rgba(255, 255, 255, 0.12);
+    --border-glass-subtle: 1px solid rgba(255, 255, 255, 0.08);
+    --overlay-dark: rgba(0, 0, 0, 0.6);
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(45deg, #5f95e6, #89b9ff);
+    --gradient-primary-rgb: #5f95e6, #89b9ff;
+    
+    /* Glow Colors */
+    --glow-primary: rgba(120, 170, 255, 0.08);
+    --glow-primary-intense: rgba(120, 170, 255, 0.35);
+    --glow-primary-subtle: rgba(120, 170, 255, 0.4);
+    
+    /* Text Colors */
+    --text-primary: white;
+    --text-muted: rgba(255, 255, 255, 0.75);
+    --text-subtle: rgba(255, 255, 255, 0.8);
+    --text-primary-light: #eaf3ff;
+    --text-blue: #89b9ff;
+    
+    /* Interactive Elements */
+    --danger-color: #e05252;
+    
+    /* Shadows */
+    --shadow-glow: 0 0 30px rgba(120, 170, 255, 0.08);
 }
 
-/* ===========================
-   Layout Wrapper
-=========================== */
-
-.page-wrapper {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 60px 0;
+body{
+    font-family:'Poppins',sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    overflow-x:hidden;
 }
 
-/* ===========================
-   Starfield Canvas
-=========================== */
-
-#starfield {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
+.page-wrapper{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:60px 0;
 }
 
-/* ===========================
-   Glass Container
-=========================== */
-
-.container {
-    width: 95%;
-    max-width: 750px;
-    padding: 50px;
-    border-radius: 28px;
-
-    backdrop-filter: blur(20px);
-    background: rgba(255, 255, 255, 0.06); /* Stable translucent */
-    border: 1px solid rgba(255, 255, 255, 0.12);
-
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
-    text-align: center;
-    position: relative;
-    overflow: hidden;
+#starfield{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index:-1;
 }
 
-/* ===========================
-   Seamless Diagonal Wave
-=========================== */
+/* =========================
+   🌌 MAIN GLASS CONTAINER
+========================= */
 
-.container::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 300%;
-    height: 100%;
+.container{
+    width:95%;
+    max-width:750px;
+    padding:55px;
+    border-radius:28px;
+    backdrop-filter:blur(22px);
+    background: var(--bg-glass);
+    border: var(--border-glass);
+    box-shadow:
+        0 25px 60px rgba(0,0,0,0.8),
+        var(--shadow-glow);
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+}
 
-    background: linear-gradient(
+/* Seamless diagonal wave */
+.container::after{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    width:300%;
+    height:100%;
+    background:linear-gradient(
         120deg,
         transparent 0%,
-        rgba(120, 180, 255, 0.05) 25%,
+        rgba(120,160,255,0.04) 25%,
         transparent 50%,
-        rgba(120, 180, 255, 0.05) 75%,
+        rgba(120,160,255,0.04) 75%,
         transparent 100%
     );
-
-    animation: waveMove 18s linear infinite;
-    pointer-events: none;
+    animation:waveMove 18s linear infinite;
+    pointer-events:none;
 }
 
-@keyframes waveMove {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(-33.33%); }
+@keyframes waveMove{
+    0%{transform:translateX(0);}
+    100%{transform:translateX(-33.33%);}
 }
 
-/* ===========================
-   Branding
-=========================== */
-
-.brand h1 {
-    font-size: 40px;
-    font-weight: 700;
+/* Shake Animation for Validation */
+.shake {
+    animation: shake 0.4s ease-in-out;
 }
 
-.brand-accent {
-    background: linear-gradient(45deg, #8ecfff, #4ea3ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    50% { transform: translateX(8px); }
+    75% { transform: translateX(-8px); }
 }
 
-.brand p {
-    margin-top: 8px;
-    font-size: 14px;
-    opacity: 0.8;
+/* =========================
+   🏷 BRAND HEADER
+========================= */
+
+.brand h1{
+    font-size:40px;
+    font-weight:700;
 }
 
-/* ===========================
-   Inputs
-=========================== */
-
-input {
-    width: 100%;
-    padding: 14px;
-    margin: 12px 0;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
-    border-radius: 12px;
-    outline: none;
-    transition: 0.2s ease;
+.brand-accent{
+    background: var(--gradient-primary);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
 }
 
-input:focus {
-    border-color: #4ea3ff;
+.brand p{
+    margin-top:6px;
+    opacity: 0.75;
+    color: var(--text-muted);
 }
 
-/* ===========================
-   Buttons
-=========================== */
+/* =========================
+   🧠 QUESTION SECTION
+========================= */
 
-button {
-    padding: 11px 20px;
-    margin: 8px 6px;
-    background: linear-gradient(45deg, #4ea3ff, #8ecfff);
-    border: none;
-    color: white;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: 0.2s ease;
+#pollQuestion{
+    margin-top:35px;
+    margin-bottom:25px;
+    font-size:22px;
+    font-weight:600;
+    letter-spacing:0.3px;
+    color: var(--text-primary-light);
+    position:relative;
 }
 
-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+#pollQuestion::before{
+    content:"";
+    position:absolute;
+    top:-18px;
+    left:50%;
+    transform:translateX(-50%);
+    width:60%;
+    height:1px;
+    background:rgba(255,255,255,0.15);
 }
 
-.option-btn {
-    width: 100%;
-    margin-top: 16px;
+/* =========================
+   📝 INPUTS & SCROLL AREA
+========================= */
+
+input{
+    width:100%;
+    padding:14px;
+    margin:12px 0;
+    background: var(--bg-input);
+    border: 1px solid rgba(255,255,255,0.18);
+    color: var(--text-primary);
+    border-radius:12px;
+    outline:none;
+    transition:0.25s;
 }
 
-.option-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+input:focus{
+    border-color:rgba(120,170,255,0.6);
+    box-shadow:0 0 8px rgba(120,170,255,0.4);
 }
 
-/* ===========================
-   Results Bar
-=========================== */
-
-.result-bar {
-    height: 16px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    overflow: hidden;
-    margin-top: 6px;
-}
-
-.fill {
-    height: 100%;
-    background: linear-gradient(90deg, #4ea3ff, #8ecfff);
-}
-
-/* ===========================
-   Share Section
-=========================== */
-
-.share-box {
-    margin-top: 20px;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 16px;
-    backdrop-filter: blur(10px);
-}
-
-#shareLink {
-    margin: 10px 0;
-    font-size: 13px;
-    word-break: break-word;
-    opacity: 0.9;
-}
-
-/* ===========================
-   Voters List
-=========================== */
-
-#votersList {
-    margin-top: 14px;
-    background: rgba(255, 255, 255, 0.06);
-    padding: 14px;
-    border-radius: 12px;
-    max-height: 300px;
+#optionInputs {
+    max-height: 240px; /* Limits growth for many options */
     overflow-y: auto;
-    display: none;
-    text-align: left;
+    padding-right: 8px;
+    margin-bottom: 10px;
 }
 
-/* ===========================
-   Option Wrapper + Remove
-=========================== */
-
-.option-wrapper {
-    position: relative;
+/* Custom scrollbar for glassmorphism */
+#optionInputs::-webkit-scrollbar {
+    width: 5px;
+}
+#optionInputs::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
 }
 
-.remove-option {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-    color: #ccc;
-    font-size: 12px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: 0.2s ease;
+/* =========================
+   🔘 BUTTONS (Muted Blue)
+========================= */
+
+button{
+    padding:11px 22px;
+    margin:8px 6px;
+    background: var(--gradient-primary);
+    border:none;
+    color: var(--text-primary);
+    border-radius:12px;
+    cursor:pointer;
+    transition:0.25s ease;
+    box-shadow:0 4px 14px rgba(0,0,0,0.3);
 }
 
-.remove-option:hover {
-    background: rgba(255, 255, 255, 0.2);
+button:hover{
+    transform:translateY(-2px);
+    box-shadow:
+        0 8px 20px rgba(0,0,0,0.5),
+        0 0 15px var(--glow-primary-intense);
 }
 
-/* ===========================
-   Modal
-=========================== */
-
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: 0.3s ease;
+.option-btn{
+    width:100%;
+    margin-top:16px;
 }
 
-.modal-overlay.active {
-    opacity: 1;
-    pointer-events: all;
+.option-btn:disabled{
+    opacity:0.5;
+    cursor:not-allowed;
 }
 
-.modal-box {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(20px);
-    padding: 30px;
-    border-radius: 16px;
-    width: 320px;
-    text-align: center;
-    transform: scale(0.8);
-    transition: 0.3s ease;
+/* =========================
+   📊 RESULTS (Animated)
+========================= */
+
+.option-block {
+    margin-bottom: 20px;
 }
 
-.modal-overlay.active .modal-box {
-    transform: scale(1);
+.option-meta {
+    margin-top: 5px;
+    font-size: 0.9em;
+    opacity: 0.8;
+    color: var(--text-subtle);
 }
 
-.modal-actions {
-    margin-top: 20px;
+.result-bar{
+    height:16px;
+    background:rgba(255,255,255,0.08);
+    border-radius:10px;
+    overflow:hidden;
+    margin-top:6px;
 }
 
-#modalConfirm.danger {
-    background: #ff4e4e;
+.fill{
+    height:100%;
+    width: 0%; /* Start at 0 for animation */
+    background: var(--gradient-primary);
+    box-shadow:0 0 10px rgba(120,170,255,0.3);
+    transition: width 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Smooth pop-in */
 }
 
-#modalConfirm.primary {
-    background: #4ea3ff;
+/* =========================
+   📦 SHARE BOX
+========================= */
+
+.share-box{
+    margin-top:28px;
+    padding:22px;
+    background: var(--bg-glass);
+    border: var(--border-glass-subtle);
+    border-radius:16px;
+    backdrop-filter:blur(10px);
 }
 
-/* ===========================
-   Poll Section Hidden Initially
-=========================== */
+/* =========================
+   👥 VOTERS LIST
+========================= */
 
-#pollSection {
-    display: none;
+#votersList{
+    margin-top:14px;
+    background:rgba(255,255,255,0.06);
+    padding:14px;
+    border-radius:12px;
+    max-height:300px;
+    overflow-y:auto;
+    display:none;
+    color: var(--text-blue);
+}
+
+#pollSection{
+    display:none;
+}
+
+/* =========================
+   ❌ OPTION REMOVE ICON
+========================= */
+
+.option-wrapper{
+    position:relative;
+}
+
+.remove-option{
+    position:absolute;
+    right:10px;
+    top:50%;
+    transform:translateY(-50%);
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.1);
+    color:#ccc;
+    font-size:12px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.remove-option:hover{
+    background:rgba(255,255,255,0.2);
+}
+
+/* =========================
+   🧩 MODAL
+========================= */
+
+.modal-overlay{
+    position:fixed;
+    inset:0;
+    background: var(--overlay-dark);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    opacity:0;
+    pointer-events:none;
+    transition:0.3s ease;
+    z-index: 1000;
+}
+
+.modal-overlay.active{
+    opacity:1;
+    pointer-events:all;
+}
+
+.modal-box{
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(20px);
+    padding:30px;
+    border-radius:18px;
+    width:320px;
+    text-align:center;
+    transform:scale(0.85);
+    transition:0.3s ease;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.modal-overlay.active .modal-box{
+    transform:scale(1);
+}
+
+#modalConfirm.danger{
+    background: var(--danger-color);
+}
+
+#modalConfirm.primary{
+    background: var(--gradient-primary);
 }

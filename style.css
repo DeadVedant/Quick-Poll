@@ -377,4 +377,12 @@ button:hover{
 
 #modalConfirm.primary{
     background: var(--gradient-primary);
+
+}
+#shareLink {
+    margin-top: 10px;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    white-space: normal;
+    line-height: 1.4;
 }

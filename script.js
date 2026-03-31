@@ -1,189 +1,268 @@
-/* =============================
-    🌌 STARFIELD ENGINE (v1.2)
-    Glow + Depth + Stable
-============================= */
+/* =========================
+   ADVANCED CINEMATIC STARFIELD
+========================= */
 
 const canvas = document.getElementById("starfield");
 const ctx = canvas.getContext("2d");
 
 let stars = [];
 let shootingStars = [];
-let superComet = null;
+let rareComets = [];
+const STAR_COUNT = 150;
 
-const STAR_COUNT = 170; 
+let lastCometTime = Date.now();
+let nextCometInterval = getRandomCometInterval();
 
-let mouseX = window.innerWidth / 2;
-let mouseY = window.innerHeight / 2;
-
-function resize(){
-    canvas.width = innerWidth;
-    canvas.height = innerHeight;
+function getRandomCometInterval() {
+    return Math.random() * 5000 + 15000;
 }
-resize();
-addEventListener("resize", resize);
 
-addEventListener("mousemove", e=>{
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-});
+let mouseX = 0;
+let mouseY = 0;
+
+function resizeCanvas(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+
+/* ========= STAR CLASS ========= */
 
 class Star{
     constructor(){
         this.reset();
-        this.twinkleSpeed = Math.random()*0.015 + 0.008;
-        this.baseAlpha = Math.random()*0.4 + 0.35;
-        this.twinkleOffset = Math.random()*Math.PI*2;
-        this.glow = Math.random() < 0.18; 
-        this.blinkTimer = 0;
-        this.blinkInterval = Math.random()*5000 + 4000; 
-        this.blinkDuration = 0;
     }
 
     reset(){
-        this.x = Math.random()*canvas.width;
-        this.y = Math.random()*canvas.height;
-        this.size = Math.random()*1.6 + 0.4;
-        this.speed = Math.random()*0.25 + 0.05;
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 1.8 + 0.4;
+        this.depth = Math.random() * 0.8 + 0.2;
+        this.speed = this.depth * 0.15; // faster drift
+        this.baseAlpha = Math.random() * 0.6 + 0.3;
+        this.twinkleSpeed = Math.random() * 0.02 + 0.01;
+        this.twinkleOffset = Math.random() * Math.PI * 2;
     }
 
-    update(time, deltaTime = 16){
-        let dx = (mouseX - canvas.width/2) * 0.0004;
-        let dy = (mouseY - canvas.height/2) * 0.0004;
-
-        this.x += this.speed + dx;
-        this.y += dy;
+    update(){
+        // Horizontal drift
+        this.x += this.speed;
 
         if(this.x > canvas.width){
             this.x = 0;
-            this.y = Math.random()*canvas.height;
+            this.y = Math.random() * canvas.height;
         }
-
-        let smoothTwinkle = Math.sin(time*this.twinkleSpeed + this.twinkleOffset) * 0.25;
-        this.blinkTimer += deltaTime; 
-        let blinkEffect = 0;
-
-        if(this.blinkTimer > this.blinkInterval){
-            this.blinkDuration += deltaTime;
-            blinkEffect = -0.5; 
-            if(this.blinkDuration > 120){ 
-                this.blinkTimer = 0;
-                this.blinkDuration = 0;
-                this.blinkInterval = Math.random()*5000 + 4000;
-            }
-        }
-
-        let finalAlpha = this.baseAlpha + smoothTwinkle + blinkEffect;
-        this.alpha = Math.max(0.1, Math.min(1, finalAlpha));
     }
 
-    draw(){
+    draw(time){
+        const parallaxX = (mouseX - canvas.width/2) * this.depth * 0.03;
+        const parallaxY = (mouseY - canvas.height/2) * this.depth * 0.03;
+
+        // Twinkling effect
+        const alpha = this.baseAlpha + 
+            Math.sin(time * this.twinkleSpeed + this.twinkleOffset) * 0.3;
+
         ctx.beginPath();
-        if(this.glow){
-            ctx.shadowBlur = 12;
-            ctx.shadowColor = "rgba(140,190,255,0.8)";
-        }
-        ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
-        ctx.fillStyle=`rgba(180,220,255,${this.alpha})`;
+        ctx.arc(this.x + parallaxX, this.y + parallaxY, this.size, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(180,220,255,${alpha})`;
         ctx.fill();
-        ctx.shadowBlur = 0;
     }
 }
+
+/* ========= SHOOTING STAR CLASS ========= */
 
 class ShootingStar{
     constructor(){
-        this.x = Math.random()*canvas.width*0.8;
-        this.y = Math.random()*canvas.height*0.5;
-        this.len = Math.random()*80 + 60;
-        this.speed = Math.random()*9 + 7;
-        this.opacity = 1;
+        this.reset();
     }
+
+    reset(){
+        this.x = Math.random() * canvas.width * 0.5;
+        this.y = Math.random() * canvas.height * 0.5;
+        this.length = Math.random() * 100 + 60;
+        this.speed = Math.random() * 10 + 8;
+        this.size = 2;
+        this.opacity = 1;
+        this.active = true;
+    }
+
     update(){
         this.x += this.speed;
-        this.y += this.speed*0.6;
+        this.y += this.speed * 0.5;
         this.opacity -= 0.02;
+
+        if(this.opacity <= 0){
+            this.active = false;
+        }
     }
+
     draw(){
         ctx.beginPath();
-        ctx.moveTo(this.x,this.y);
-        ctx.lineTo(this.x-this.len,this.y-this.len*0.6);
-        ctx.strokeStyle=`rgba(200,230,255,${this.opacity})`;
-        ctx.lineWidth=2;
+        ctx.moveTo(this.x, this.y);
+        ctx.lineTo(this.x - this.length, this.y - this.length * 0.5);
+        ctx.strokeStyle = `rgba(255,255,255,${this.opacity})`;
+        ctx.lineWidth = this.size;
         ctx.stroke();
     }
 }
 
-class SuperComet{
+/* ========= RARE BLUE COMET CLASS ========= */
+
+class RareBlueComet{
     constructor(){
-        this.x = -300;
-        this.y = -150;
-        this.len = 320;
-        this.speed = 22;
-        this.opacity = 1;
+        this.reset();
     }
+
+    reset(){
+        this.x = -200; 
+        this.y = Math.random() * (canvas.height * 0.5); 
+        this.length = Math.random() * 400 + 300; 
+        this.speed = Math.random() * 8 + 6; 
+        this.angle = Math.random() * 0.2 + 0.1; 
+        this.size = Math.random() * 2 + 3;
+        this.opacity = 0; // Starts invisible
+        this.fadeIn = true;
+        this.active = true;
+    }
+
     update(){
         this.x += this.speed;
-        this.y += this.speed*0.6;
-        this.opacity -= 0.008;
+        this.y += this.speed * this.angle;
+        
+        if (this.fadeIn) {
+            this.opacity += 0.01;
+            if (this.opacity >= 1) {
+                this.opacity = 1;
+                this.fadeIn = false;
+            }
+        } else if (this.x > canvas.width * 0.8) {
+            this.opacity -= 0.01;
+        }
+
+        if(this.opacity <= 0 && !this.fadeIn || this.x > canvas.width + this.length){
+            this.active = false;
+        }
     }
+
     draw(){
+        ctx.save();
+        
+        let pulse = Math.sin(Date.now() * 0.015) * 0.5 + 0.5;
+        let tailX = this.x - this.length;
+        let tailY = this.y - (this.length * this.angle);
+
+        // Outer wide glowing tail
+        let tailGlow = ctx.createLinearGradient(this.x, this.y, tailX, tailY);
+        tailGlow.addColorStop(0, `rgba(0, 150, 255, ${this.opacity * 0.4})`);
+        tailGlow.addColorStop(1, `rgba(0, 20, 100, 0)`);
+        
         ctx.beginPath();
-        ctx.moveTo(this.x,this.y);
-        ctx.lineTo(this.x-this.len,this.y-this.len*0.6);
-        ctx.strokeStyle=`rgba(150,200,255,${this.opacity})`;
-        ctx.lineWidth=6;
-        ctx.shadowBlur=25;
-        ctx.shadowColor="rgba(150,200,255,1)";
+        ctx.moveTo(this.x, this.y);
+        ctx.lineTo(tailX, tailY);
+        ctx.strokeStyle = tailGlow;
+        ctx.lineWidth = this.size * 4;
+        ctx.lineCap = "round";
         ctx.stroke();
-        ctx.shadowBlur=0;
+
+        // Inner bright core tail
+        let tailCore = ctx.createLinearGradient(this.x, this.y, tailX, tailY);
+        tailCore.addColorStop(0, `rgba(180, 230, 255, ${this.opacity})`);
+        tailCore.addColorStop(0.3, `rgba(50, 150, 255, ${this.opacity * 0.8})`);
+        tailCore.addColorStop(1, `rgba(0, 0, 255, 0)`);
+        
+        ctx.beginPath();
+        ctx.moveTo(this.x, this.y);
+        ctx.lineTo(tailX, tailY);
+        ctx.strokeStyle = tailCore;
+        ctx.lineWidth = this.size;
+        ctx.stroke();
+        
+        // Glowing comet head
+        ctx.shadowBlur = 20 + pulse * 15;
+        ctx.shadowColor = `rgba(0, 180, 255, ${this.opacity})`;
+        
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * 1.2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+        ctx.fill();
+        
+        // Extra inner star sparkle on head
+        ctx.shadowBlur = 0;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * 0.6, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(200, 240, 255, ${this.opacity})`;
+        ctx.fill();
+
+        ctx.restore();
     }
 }
 
-for(let i=0;i<STAR_COUNT;i++) stars.push(new Star());
+/* ========= INIT ========= */
 
-let nextShootingStarTime = performance.now() + 3000;
-let nextCometTime = performance.now() + 25000;
-let lastFrameTime = performance.now();
+for(let i=0;i<STAR_COUNT;i++){
+    stars.push(new Star());
+}
 
-function animate(time){
+window.addEventListener("mousemove",(e)=>{
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+});
+
+/* ========= ANIMATION LOOP ========= */
+
+function animateStars(time = 0){
     ctx.clearRect(0,0,canvas.width,canvas.height);
-    
-    const deltaTime = Math.min(time - lastFrameTime, 50); // Cap deltaTime to prevent large jumps
-    lastFrameTime = time;
-    
-    stars.forEach(s=>{
-        s.update(time*0.001, deltaTime);
-        s.draw();
+
+    // Update and draw stars
+    stars.forEach(star=>{
+        star.update();
+        star.draw(time);
     });
 
-    if(time >= nextShootingStarTime){
-        if(shootingStars.length < 3) shootingStars.push(new ShootingStar());
-        nextShootingStarTime = time + 3000 + Math.random()*2000;
+    // Increase shooting star frequency
+    if(Math.random() < 0.01){  // more frequent now
+        shootingStars.push(new ShootingStar());
     }
 
-    shootingStars.forEach((s)=>{
+    // Update shooting stars
+    shootingStars.forEach((s, index)=>{
         s.update();
         s.draw();
+
+        if(!s.active){
+            shootingStars.splice(index,1);
+        }
     });
-    shootingStars = shootingStars.filter(star => star.opacity > 0);
 
-    if(time >= nextCometTime){
-        superComet = new SuperComet();
-        document.body.style.filter="brightness(1.2)";
-        setTimeout(()=>document.body.style.filter="brightness(1)",300);
-        nextCometTime = time + 25000 + Math.random()*10000;
+    // Handle Rare Blue Comet spawning
+    let currentTime = Date.now();
+    if(currentTime - lastCometTime > nextCometInterval){
+        rareComets.push(new RareBlueComet());
+        lastCometTime = currentTime;
+        nextCometInterval = getRandomCometInterval();
     }
 
-    if(superComet){
-        superComet.update();
-        superComet.draw();
-        if(superComet.opacity<=0) superComet=null;
-    }
-    requestAnimationFrame(animate);
+    // Update and draw rare comets
+    rareComets.forEach((c, index)=>{
+        c.update();
+        c.draw();
+
+        if(!c.active){
+            rareComets.splice(index, 1);
+        }
+    });
+
+    requestAnimationFrame(animateStars);
 }
-animate();
 
-/* =============================
-    🔐 MODAL SYSTEM (v1.1)
+animateStars();
+
+
+
+
+/* =========================
+   🗳 QUICKPOLL FUNCTIONALITY
 ============================= */
 
 const overlay = document.getElementById("modalOverlay");
@@ -252,8 +331,25 @@ function submitVote(){
     localStorage.setItem("allPolls",JSON.stringify(allPolls));
     localStorage.setItem("votedPolls",JSON.stringify(votedPolls));
     
-    // Trigger confetti on vote submission
-    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#5f95e6', '#ffffff'] });
+    // White glowy confetti
+    confetti({
+        particleCount: 80,
+        spread: 90,
+        origin: { y: 0.5 },
+        colors: ['#e0e7ff', '#f5f3ff', '#ffffff']
+    });
+    confetti({
+        particleCount: 50,
+        spread: 120,
+        origin: { x: 0.1, y: 0.3 },
+        colors: ['#e0e7ff', '#f5f3ff']
+    });
+    confetti({
+        particleCount: 50,
+        spread: 120,
+        origin: { x: 0.9, y: 0.3 },
+        colors: ['#e0e7ff', '#f5f3ff']
+    });
     
     renderPoll();
 }
@@ -331,15 +427,21 @@ function renderPoll(){
 
     poll.options.forEach((o,i)=>{
         let percent=total?((o.votes/total)*100).toFixed(1):0;
+        const isVoted = votedPolls[currentPollId];
         container.innerHTML+=`
             <div class="option-block">
-                <button class="option-btn"
-                ${votedPolls[currentPollId]?"disabled":""}
-                data-index="${i}">${o.text}</button>
+                <div class="option-header">
+                    <div class="option-name">${o.text}</div>
+                    <div class="option-meta">${percent}% (${o.votes})</div>
+                </div>
+                <button class="option-btn ${isVoted ? 'voted' : ''}"
+                    ${isVoted ? "disabled" : ""}
+                    data-index="${i}">
+                    ${isVoted ? '✓ Voted' : 'Vote'}
+                </button>
                 <div class="result-bar">
                     <div class="fill" id="fill-${i}" style="width: 0%"></div>
                 </div>
-                <div class="option-meta">${percent}% — ${o.votes} votes</div>
             </div>
         `;
         // Trigger animation after a tiny delay so the DOM can catch up
@@ -366,17 +468,17 @@ function toggleVoters(){
     }
 
     let poll=allPolls[currentPollId];
-    let html="<strong>Voters:</strong><br><br>";
+    let html="";
     let count = 0;
 
     poll.options.forEach(o=>{
         o.voters.forEach(name=>{
-            html+=`<span style="color:#89b9ff">${name}</span> voted for "${o.text}"<br>`;
+            html += `<div style="padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.15);">👤 <strong>${name}</strong> voted for <span style="color: #e0e7ff">"${o.text}"</span></div>`;
             count++;
         });
     });
 
-    box.innerHTML = count > 0 ? html : "No votes yet.";
+    box.innerHTML = count > 0 ? html : "No votes yet";
     box.style.display="block";
 }
 

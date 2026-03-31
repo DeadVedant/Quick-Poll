@@ -1,95 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>QuickPoll – Create & Share Polls Instantly</title>
+    <title>QuickPoll</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-
-    <!-- Styles -->
     <link rel="stylesheet" href="style.css">
 
-    <!-- Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 
 <body>
 
-    <!-- 🌌 Starfield Canvas -->
-    <canvas id="starfield"></canvas>
+<canvas id="starfield"></canvas>
 
-    <div class="page-wrapper">
-        <div class="container">
-
-            <!-- Brand -->
+<div class="page-wrapper">
+    <div class="container">
+        <div class="container-scroll">
             <div class="brand">
                 <h1>
                     <span class="brand-light">Quick</span>
                     <span class="brand-accent">Poll</span>
                 </h1>
-                <p>Create & share polls instantly — no sign-up needed</p>
+                <p>✨ Create & share polls instantly — no sign-up needed ✨</p>
             </div>
 
-            <!-- Create Section -->
             <div id="createSection">
-                <input type="text" id="question" placeholder="Enter your question">
+                <input type="text" id="question" placeholder="📝 Enter your question...">
                 <div id="optionInputs"></div>
 
-                <button data-action="addOption">Add Option</button>
-                <button data-action="createPoll">Generate Poll</button>
+                <button data-action="addOption">➕ Add Option</button>
+                <button data-action="createPoll">🚀 Generate Poll</button>
             </div>
 
-            <!-- Poll Section -->
             <div id="pollSection">
                 <h3 id="pollQuestion"></h3>
                 <div id="optionsContainer"></div>
 
-                <!-- Share Section -->
                 <div class="share-box">
                     <div><strong>Share Link:</strong></div>
                     <div id="shareLink"></div>
-
-                    <button id="copyBtn" data-action="copyLink">Copy Link</button>
-                    <button data-action="shareWhatsApp">WhatsApp</button>
+                    <button id="copyBtn" data-action="copyLink">📋 Copy Link</button>
+                    <button data-action="shareWhatsApp">💬 WhatsApp</button>
                 </div>
 
-                <!-- Voters -->
-                <button data-action="toggleVoters">See Voters</button>
+                <button data-action="toggleVoters">👥 See Voters</button>
                 <div id="votersList"></div>
 
-                <!-- Poll Controls -->
-                <button data-action="resetPoll" data-value="reset">Reset Poll</button>
-                <button data-action="createNewPoll" data-value="new">Create New Poll</button>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- 🔐 Custom Modal (Extended for Name Input) -->
-    <div id="modalOverlay" class="modal-overlay">
-        <div class="modal-box">
-            <h3 id="modalTitle"></h3>
-            <p id="modalText"></p>
-
-            <!-- Name Input (hidden unless needed) -->
-            <input 
-                type="text" 
-                id="modalInput" 
-                placeholder="Enter your name"
-                style="display:none;"
-            >
-
-            <div class="modal-actions">
-                <button id="modalCancel">Cancel</button>
-                <button id="modalConfirm"></button>
+                <button data-action="resetPoll" data-value="reset">🔄 Reset Poll</button>
+                <button data-action="createNewPoll" data-value="new">✨ Create New Poll</button>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Scripts -->
-    <script src="script.js"></script>
+<div id="modalOverlay" class="modal-overlay">
+    <div class="modal-box">
+        <h3 id="modalTitle"></h3>
+        <p id="modalText"></p>
+        <input type="text" id="modalInput" placeholder="Enter your name" style="display:none;">
+        <div class="modal-actions">
+            <button id="modalCancel">Cancel</button>
+            <button id="modalConfirm"></button>
+        </div>
+    </div>
+</div>
 
+<audio id="voteSound">
+    <source src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" type="audio/mpeg">
+</audio>
+
+<script src="script.js"></script>
 </body>
 </html>

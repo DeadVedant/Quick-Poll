@@ -26,7 +26,7 @@ Built with pure HTML, CSS, and Vanilla JavaScript.
 
 ## 🚀 Live Demo
 
-👉 https://deadvedant.github.io/Quick-Poll/
+👉 https://vedantbakre.github.io/Quick-Poll/
 
 ---
 
